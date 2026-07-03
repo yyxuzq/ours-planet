@@ -14,6 +14,18 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Prepare web directory
+        run: |
+          mkdir www
+          cp index.html www/
+          cp manifest.webmanifest www/
+          cp sw.js www/
+          cp *.jpg www/ 2>/dev/null || true
+          cp *.png www/ 2>/dev/null || true
+          cp *.svg www/ 2>/dev/null || true
+          cp *.mp3 www/ 2>/dev/null || true
+          cp *.css www/ 2>/dev/null || true
+
       - name: Install dependencies
         run: |
           npm init -y
@@ -21,7 +33,7 @@ jobs:
 
       - name: Setup Capacitor
         run: |
-          npx cap init "茗茗的共栖星球" "com.xuyueming.ours" --web-dir ./
+          npx cap init "茗茗的共栖星球" "com.xuyueming.ours" --web-dir www
           npx cap add android
 
       - name: Generate keystore
