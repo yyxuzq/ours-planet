@@ -48,7 +48,12 @@ jobs:
           cd android
           ./gradlew assembleDebug
 
-     - name: Upload Debug APK (skip manual signing)
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Upload Debug APK (skip manual signing)
         uses: actions/upload-artifact@v4
         with:
           name: 共栖星球-debug-apk
