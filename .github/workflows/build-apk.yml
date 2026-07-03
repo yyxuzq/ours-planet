@@ -14,9 +14,9 @@ jobs:
         with:
           node-version: '20'
 
-      -  name: Setup Java
-         uses: actions/setup-java@v4
-         with:
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
           distribution: 'temurin'
           java-version: '17'
 
@@ -30,7 +30,6 @@ jobs:
           cp *.png www/ 2>/dev/null || true
           cp *.svg www/ 2>/dev/null || true
           cp *.mp3 www/ 2>/dev/null || true
-          cp *.css www/ 2>/dev/null || true
 
       - name: Install dependencies
         run: |
@@ -42,24 +41,12 @@ jobs:
           npx cap init "茗茗的共栖星球" "com.xuyueming.ours" --web-dir www
           npx cap add android
 
-      - name: Generate keystore
-        run: |
-          keytool -genkey -v -keystore ours-release.keystore -alias ours \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass ours123456 -keypass ours123456 \
-            -dname "CN=茗茗, OU=共栖星球, O=OursPlanet, L=Unknown, ST=Unknown, C=CN"
-
       - name: Build APK
         run: |
           cd android
           ./gradlew assembleDebug
 
-      - name: Build APK
-        run: |
-          cd android
-          ./gradlew assembleDebug
-
-      - name: Upload Debug APK (skip manual signing)
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: 共栖星球-debug-apk
