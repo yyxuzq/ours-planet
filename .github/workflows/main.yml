@@ -1,0 +1,30 @@
+name: Sign APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate keystore
+        run: |
+          keytool -genkey -v -keystore ours-release.keystore -alias ours \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass ours123456 -keypass ours123456 \
+            -dname "CN=茗茗, OU=共栖星球, O=OursPlanet, L=Unknown, ST=Unknown, C=CN"
+
+      - name: Sign APK
+        run: |
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore ours-release.keystore -storepass ours123456 -keypass ours123456 \
+            共栖星球-unsigned.apk ours
+          mv 共栖星球-unsigned.apk 共栖星球-signed.apk
+
+      - name: Upload signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-apk
+          path: 共栖星球-signed.apk
