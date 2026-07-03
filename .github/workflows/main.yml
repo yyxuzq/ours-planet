@@ -1,13 +1,40 @@
-name: Sign APK
+name: Build APK
 
 on:
   workflow_dispatch:
 
 jobs:
-  sign:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Prepare web directory
+        run: |
+          mkdir www
+          cp index.html www/
+          cp manifest.webmanifest www/
+          cp sw.js www/
+          cp *.jpg www/ 2>/dev/null || true
+          cp *.png www/ 2>/dev/null || true
+          cp *.svg www/ 2>/dev/null || true
+          cp *.mp3 www/ 2>/dev/null || true
+          cp *.css www/ 2>/dev/null || true
+
+      - name: Install dependencies
+        run: |
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Setup Capacitor
+        run: |
+          npx cap init "茗茗的共栖星球" "com.xuyueming.ours" --web-dir www
+          npx cap add android
 
       - name: Generate keystore
         run: |
@@ -16,15 +43,20 @@ jobs:
             -storepass ours123456 -keypass ours123456 \
             -dname "CN=茗茗, OU=共栖星球, O=OursPlanet, L=Unknown, ST=Unknown, C=CN"
 
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
       - name: Sign APK
         run: |
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
             -keystore ours-release.keystore -storepass ours123456 -keypass ours123456 \
-            共栖星球-unsigned.apk ours
-          mv 共栖星球-unsigned.apk 共栖星球-signed.apk
+            android/app/build/outputs/apk/debug/app-debug.apk ours
+          cp android/app/build/outputs/apk/debug/app-debug.apk 共栖星球-signed.apk
 
-      - name: Upload signed APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: signed-apk
+          name: 共栖星球-signed-apk
           path: 共栖星球-signed.apk
