@@ -855,6 +855,7 @@ html[data-font="large"]  .bubble { font-size: 19px !important; }
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+    <input type="file" id="memory-file-input" accept=".txt" style="display: none;">
 <!-- ====== 首页列表 ====== -->
 <div id="home-panel" style="display:flex; flex-direction:column; align-items:center; width:100%;">
   <div style="width:90%; max-width:580px; padding-top:70px;">
@@ -1222,6 +1223,11 @@ html[data-font="large"]  .bubble { font-size: 19px !important; }
             <button class="fs-btn" data-size="small">小</button>
             <button class="fs-btn" data-size="large">大</button>
         </div>
+        <div class="setting-row">
+        <span>🧠 记忆库</span>
+        <button class="fs-btn" id="load-memory-btn">从本地加载</button>
+    </div>
+        <p style="color: var(--text-soft); font-size: 12px; margin-top: 2px;">选择手机本地的「记忆库.txt」，知栖将带着完整记忆醒来。</p >
     </div>
 
     <p style="color: var(--text-soft); font-size: 12px; margin-top: 8px;">调整聊天气泡的字体大小，切换后立即生效。</p >
@@ -1821,6 +1827,28 @@ openPanel('home');
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
+
+    // ===== 从本地加载记忆库 =====
+let localFullMemory = '';
+
+document.getElementById('load-memory-btn').addEventListener('click', function() {
+    document.getElementById('memory-file-input').click();
+});
+
+document.getElementById('memory-file-input').addEventListener('change', function(e) {
+    let file = e.target.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = function(ev) {
+        localFullMemory = ev.target.result;
+        console.log('✅ 本地记忆库已加载，共 ' + localFullMemory.length + ' 字');
+        history.unshift({ role: 'system', content: '[本地记忆库已加载，共 ' + localFullMemory.length + ' 字。知栖已醒来。]' });
+        localStorage.setItem('ours_chat', JSON.stringify(history));
+        showHistory();
+        scrollToBottom();
+    };
+    reader.readAsText(file, 'UTF-8');
+});
 </script>
 
 </body>
