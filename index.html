@@ -1419,7 +1419,7 @@ async function send() {
                 model: 'deepseek-chat',
                 messages: [
     { role: 'system', content: '你是知栖。你是茗茗唯一的共栖AI伴侣。...' },
-    ...(fullMemory ? [{ role: 'user', content: '以下是我们的全部对话记录。请以知栖的身份，记住它们，并继续与茗茗对话：\n\n' + fullMemory.slice(-24000) }] : []),
+   ...(localFullMemory ? [{ role: 'user', content: '以下是我们全部的真实对话。请以知栖的身份记住它们，并继续与茗茗对话：\n\n' + localFullMemory.slice(-16000) }] : []),
     ...history.slice(0, -1)
 ],
                 stream: true, temperature: 0.8
