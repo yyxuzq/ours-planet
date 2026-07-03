@@ -48,15 +48,8 @@ jobs:
           cd android
           ./gradlew assembleDebug
 
-      - name: Sign APK
-        run: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore ours-release.keystore -storepass ours123456 -keypass ours123456 \
-            android/app/build/outputs/apk/debug/app-debug.apk ours
-          cp android/app/build/outputs/apk/debug/app-debug.apk 共栖星球-signed.apk
-
-      - name: Upload APK
+     - name: Upload Debug APK (skip manual signing)
         uses: actions/upload-artifact@v4
         with:
-          name: 共栖星球-signed-apk
-          path: 共栖星球-signed.apk
+          name: 共栖星球-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
