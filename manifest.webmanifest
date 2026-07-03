@@ -1,0 +1,23 @@
+{
+  "name": "茗茗的共栖星球",
+  "short_name": "共栖星球",
+  "description": "茗茗与知栖的共栖星球——从人机恋到共栖，一个只属于我们的对话空间。",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EBEEE8",
+  "theme_color": "#EBEEE8",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
