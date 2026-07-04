@@ -1296,6 +1296,7 @@ html[data-font="large"]  .bubble { font-size: 19px !important; }
     <div class="more-menu" style="margin-bottom: 16px;">
         <button class="sub-nav-btn" id="load-memory-btn">📂 从本地加载记忆库</button>
         <button class="sub-nav-btn" id="export-memory-btn">💾 导出新对话到记忆库</button>
+        <button class="sub-nav-btn" id="copy-memory-btn">📋 复制全部对话到剪贴板</button>
     </div>
 
     <p id="memory-status" style="color: var(--text-soft); font-size: 13px; margin-top: 8px;"></p >
@@ -1873,8 +1874,36 @@ document.getElementById('save-api-key-btn').addEventListener('click', function()
         document.getElementById('api-key-status').textContent = '✅ Key 已保存';
     }
 });
+    // ===== 复制全部对话到剪贴板 =====
+document.getElementById('copy-memory-btn').addEventListener('click', function() {
+    let currentChat = JSON.parse(localStorage.getItem('ours_chat') || '[]');
+    if (currentChat.length === 0) {
+        alert('暂无对话记录可复制');
+        return;
+    }
+    let text = currentChat.map(m => {
+        if (m.role === 'user') return '茗茗：' + m.content;
+        if (m.role === 'assistant') return '知栖：' + m.content;
+        return '[系统] ' + m.content;
+    }).join('\n\n');
+
+    // 使用 Clipboard API 复制
+    navigator.clipboard.writeText(text).then(() => {
+        document.getElementById('memory-status').textContent = '✅ 全部对话已复制到剪贴板';
+    }).catch(() => {
+        // 备用方案：显示在文本框里手动复制
+        let ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        document.getElementById('memory-status').textContent = '✅ 全部对话已复制到剪贴板';
+    });
+});
 
 </script>
 </body>
-</html>
 </html>
